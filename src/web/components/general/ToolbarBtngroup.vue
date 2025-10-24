@@ -30,6 +30,7 @@ import {
   instructions_packed,
   reset,
   remove_library,
+  load_CREATINO_library,
   getPC,
 } from "@/core/core.mjs"
 import { resetStats } from "@/core/executor/stats.mts"
@@ -236,6 +237,20 @@ export default defineComponent({
     removeLibrary() {
       // this.$root.librayLoaded = false
       remove_library()
+    },
+    // Add CREATino library
+    addCreatinoLibrary() {
+      // Show warning
+      const error = load_CREATINO_library()
+      if (error == null) {
+        show_notification("No se pudo cargar la librería CREATino", "error")
+      }
+      else {
+        show_notification(
+          "La librería CREATino se ha cargado correctamente",
+          "success",
+        )
+      }
     },
 
     //
@@ -794,6 +809,10 @@ export default defineComponent({
           <b-dropdown-item @click="removeLibrary">
             <font-awesome-icon :icon="['fas', 'trash-can']" />
             Remove
+          </b-dropdown-item>
+          <b-dropdown-item @click="addCreatinoLibrary">
+            <font-awesome-icon :icon="['fas', 'infinity']" />
+            CREATino Library
           </b-dropdown-item>
         </b-dropdown>
 
