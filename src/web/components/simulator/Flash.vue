@@ -125,6 +125,7 @@ export default defineComponent({
       eraseflash: false,
       showPopup: false,
       pendingAction: null as string | null,
+      arduino_support: false,
     }
   },
 
@@ -237,6 +238,21 @@ export default defineComponent({
         "simulator.download_driver",
         "simulator.download_driver",
       )
+    },
+    creatinoMode(isChecked: boolean) {
+      LOCALLAB.gateway_monitor(this.flashURL + "/arduinoMode", {
+        state: isChecked,
+      }).then(data => {
+        this.eraseflash = false
+        console_log(JSON.stringify(data, null, 2), "DEBUG")
+      })
+
+      // Google Analytics
+      creator_ga("simulator", "simulator.arduinoMode", "simulator.arduinoMode")
+    },
+
+    handleCheckboxChange(value: boolean) {
+      this.creatinoMode(value)
     },
 
     do_flash() {
@@ -422,6 +438,14 @@ export default defineComponent({
           class="mt-2"
         />
         <br />
+        <b-col v-if="target_board" class="mb-3">
+          <b-form-checkbox
+            v-model="arduino_support"
+            @change="handleCheckboxChange(arduino_support)"
+          >
+            <span class="checkbox-label">Enable Arduino Support</span>
+          </b-form-checkbox>
+        </b-col>
 
         <b-tabs content-class="mt-3" v-if="targetBoard">
           <b-tab title="Prerequisites" id="flash-tab-prerequisites">
@@ -741,7 +765,7 @@ export default defineComponent({
                     This action will delete your previous work. Are you sure you
                     want to proceed?
                   </b-modal>
-		</b-col>
+                </b-col>
 
                 <!-- Columna 2: Monitor, Debug y Stop -->
                 <b-col class="d-grid gap-3">

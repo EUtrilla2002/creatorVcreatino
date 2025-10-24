@@ -244,8 +244,7 @@ export default defineComponent({
       const error = load_CREATINO_library()
       if (error == null) {
         show_notification("No se pudo cargar la librería CREATino", "error")
-      }
-      else {
+      } else {
         show_notification(
           "La librería CREATino se ha cargado correctamente",
           "success",
