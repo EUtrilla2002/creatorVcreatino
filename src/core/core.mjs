@@ -237,23 +237,24 @@ export function remove_library() {
 }
 
 export async function load_CREATINO_library() {
-  try {
-    const baseUrl = window.location.origin
-    const filePath = `${baseUrl}/public/custom_libraries/creatino.o`
+    try {
+        const baseUrl = window.location.origin;
+        const filePath = `${baseUrl}/public/custom_libraries/creatino.o`;
 
-    console.log('Intentando cargar:', filePath)
+        console.log("Intentando cargar:", filePath);
 
-    const response = await fetch(filePath)
-    if (!response.ok) {
-      throw new Error(`Error al cargar el archivo: ${response.status} ${response.statusText}`)
+        const response = await fetch(filePath);
+        if (!response.ok) {
+            throw new Error(
+                `Error al cargar el archivo: ${response.status} ${response.statusText}`,
+            );
+        }
+        const lib_str = await response.text();
+        loadedLibrary = JSON.parse(lib_str);
+    } catch (error) {
+        return null;
     }
-    const lib_str = await response.text()
-    loadedLibrary = JSON.parse(lib_str);
-  } catch (error) {
-    return null
-  }
 }
-
 
 // compilation
 
