@@ -32,6 +32,7 @@ import {
   remove_library,
   load_CREATINO_library,
   getPC,
+  loadedLibrary,
 } from "@/core/core.mjs"
 import { resetStats } from "@/core/executor/stats.mts"
 import { instructions, setInstructions } from "@/core/assembler/assembler.mjs"
@@ -243,12 +244,13 @@ export default defineComponent({
       // Show warning
       const error = load_CREATINO_library()
       if (error == null) {
-        show_notification("No se pudo cargar la librería CREATino", "error")
+        show_notification("Failed to load CREATino library", "error")
       } else {
         show_notification(
-          "La librería CREATino se ha cargado correctamente",
+          "CREATino library added successfully",
           "success",
         )
+        
       }
     },
 

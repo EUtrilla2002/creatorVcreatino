@@ -53,6 +53,7 @@ import * as archProcessor from "./utils/architectureProcessor.mjs";
 export let loadedLibrary = {};
 export let backup_stack_address;
 export let backup_data_address;
+export let loadedCreatino = false;
 
 /** @type {import("./core.d.ts").Architecture} */
 export let architecture = {};
@@ -234,6 +235,7 @@ export function load_library(lib_str) {
  */
 export function remove_library() {
     loadedLibrary = {};
+    loadedCreatino = false;
 }
 
 export async function load_CREATINO_library() {
@@ -251,6 +253,7 @@ export async function load_CREATINO_library() {
         }
         const lib_str = await response.text();
         loadedLibrary = JSON.parse(lib_str);
+        loadedCreatino = true;
     } catch (error) {
         return null;
     }

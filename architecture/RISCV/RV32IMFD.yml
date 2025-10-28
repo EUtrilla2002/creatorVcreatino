@@ -1633,10 +1633,12 @@ instructions:
         - field: opcode
           value: "1101111"
       definition: |
+        if (CAPI.ARDUINO.check_arduino(imm,registers["PC"]) === false) {
         registers[rd] = registers["PC"] + 4n;
         registers["PC"] = registers["PC"] + imm;
         CAPI.CHECK_STACK.begin(registers["PC"]);
         CAPI.DRAW_STACK.begin(registers["PC"]);
+        } 
       help: Jump to address and place return address in rd.
     - name: add
       template: R
