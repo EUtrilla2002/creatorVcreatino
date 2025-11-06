@@ -36,35 +36,42 @@ export const ARDUINO = {
 };
 
 export function createHookMap() {
-    // Obtener todos los nombres de funciones de hooks en orden
-    const hookFunctions = Object.keys(hooks)
-        .filter(k => k.startsWith("cr_"))
-        .sort(); // Aseguramos que estén en orden alfabético si es necesario
+    const hookOrder = hooks.hookOrder as string[]; // 👈 asegurar tipo
 
-    let i = 0;
-    for (let addr = 0x0; addr <= 0x12c; addr += 4) {
-        const funcName = hookFunctions[i];
-        const func = (hooks as Record<string, () => void>)[funcName];
+    for (let i = 0, addr = 0x0; i < hookOrder.length; i++, addr += 4) {
+        const funcName = hookOrder[i];
+
+        const func = hooks[funcName as keyof typeof hooks] as (() => void) | undefined;
 
         hookMap.set(
             addr,
-            func ??
-                (() =>
-                    console.log(`Function ${funcName ?? "unknown"} not found`)),
+            func ?? (() => console.log(`Function ${funcName} not found`))
         );
-
-        i++;
     }
 
     console.log("hookMap listo:", hookMap);
 }
+// AUX
+function getAddressOfHook(func: () => void): number | undefined {
+    for (const [addr, f] of hookMap.entries()) {
+        if (f === func) return addr;
+    }
+    return undefined;
+}
+
 
 // ------- Identify arduino functions-----
 export function check_arduino(funcName: number, pc_state: number): boolean {
-    const key = Math.abs(Number(pc_state) + Number(funcName) - 4);
+    const key = Math.abs(Number(pc_state) + Number(funcName));
     if (hookMap.size === 0) {
         //await createHookMap(); ERROR
         createHookMap();
+        const { cr_delay } = hooks; // ✅ aquí coges solo esa función
+        const addr = getAddressOfHook(cr_delay);
+        if (addr != undefined){
+            console.log("0x" + addr.toString(16));
+        }
+        
     }
     if (loadedCreatino == false) {
         console.log("Not CREATino library loaded");
