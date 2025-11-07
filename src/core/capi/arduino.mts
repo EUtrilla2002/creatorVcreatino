@@ -65,13 +65,7 @@ export function check_arduino(funcName: number, pc_state: number): boolean {
     const key = Math.abs(Number(pc_state) + Number(funcName));
     if (hookMap.size === 0) {
         //await createHookMap(); ERROR
-        createHookMap();
-        const { cr_delay } = hooks; // ✅ aquí coges solo esa función
-        const addr = getAddressOfHook(cr_delay);
-        if (addr != undefined){
-            console.log("0x" + addr.toString(16));
-        }
-        
+        createHookMap();        
     }
     if (loadedCreatino == false) {
         console.log("Not CREATino library loaded");
