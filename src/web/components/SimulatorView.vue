@@ -35,6 +35,7 @@ import Keyboard from "./simulator/Keyboard.vue"
 import Calculator from "./simulator/Calculator.vue"
 import Stats from "./simulator/Stats.vue"
 import Flash from "./simulator/Flash.vue"
+import App from "./simulator/CreatinoMaker/App.vue"
 
 export default defineComponent({
   props: {
@@ -79,6 +80,7 @@ export default defineComponent({
     Calculator,
     Stats,
     Flash,
+    App
   },
 
   data() {
@@ -174,6 +176,13 @@ export default defineComponent({
             <Stats
               v-if="data_mode === 'stats'"
               ref="stats"
+              :dark="dark"
+              :representation="stat_representation"
+              :type="stat_type"
+            />
+            <App
+              v-if="data_mode === 'maker'"
+              ref="maker"
               :dark="dark"
               :representation="stat_representation"
               :type="stat_type"

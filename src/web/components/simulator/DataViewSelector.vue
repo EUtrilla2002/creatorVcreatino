@@ -148,6 +148,18 @@ export default defineComponent({
             <font-awesome-icon :icon="['fas', 'chart-line']" />
             Statistics
           </b-button>
+
+          <b-button
+            id="maker_btn"
+            size="sm"
+            :pressed="isSelected('maker')"
+            :class="{ border: dark }"
+            :variant="dark ? 'dark' : 'outline-secondary'"
+            @click="change_data_view('maker')"
+          >
+            <font-awesome-icon :icon="['fas', 'pen']" />
+            Creatino Maker
+          </b-button>
         </b-button-group>
       </b-col>
     </b-row>

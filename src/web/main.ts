@@ -36,6 +36,13 @@ library.add(fas, far, fab);
 
 import { confirmExit, show_notification } from "./utils.mjs";
 import { creator_ga } from "../core/utils/creator_ga.mjs";
+//Maker
+import '@wokwi/elements'
+import { faTrash, faPalette, faRotate, faRightLeft, faMagnifyingGlassPlus, faMagnifyingGlassMinus,faBars, faUpload, faDownload, faInfinity, faWrench, faRotateLeft, faRotateRight, faInfo, faMoon,faCirclePlus, faMusic, faVolumeXmark} from '@fortawesome/free-solid-svg-icons'
+import { faPlay, faGift} from '@fortawesome/free-solid-svg-icons'
+library.add(faTrash, faPalette, faRotate, faRightLeft, faMagnifyingGlassPlus, faMagnifyingGlassMinus, faBars, faPlay)
+library.add(faUpload, faDownload, faInfinity, faWrench, faRotateLeft,faRotateRight, faInfo, faMoon, faCirclePlus, faGift, faMusic, faVolumeXmark)
+
 
 /*Closing alert*/
 window.onbeforeunload = confirmExit;
@@ -44,7 +51,7 @@ window.onbeforeunload = confirmExit;
 const app = createApp(App)
     .component("font-awesome-icon", FontAwesomeIcon)
     .use(createBootstrap());
-
+app.component('fa-icon', FontAwesomeIcon)
 //Error handler
 app.config.errorHandler = function (err, _vm, _info) {
     // Log the error for debugging
