@@ -1,12 +1,24 @@
 // src/hooks/hookMap.js
+// /home/elisa/creatorVcreatino/src/web/components/simulator/CreatinoMaker/components/BoardElements/esp32c3devkit2.js
 import boardData from "./esp32c3devkit2.json";
-
-const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
+import { crex_findReg } from "@/core/register/registerLookup.mjs";
+import { packExecute } from "@/core/utils/utils.mjs";
+import { readRegister, writeRegister } from "@/core/register/registerOperations.mjs";
 
 const hookMap = {
-  0x100: function cr_digitalWrite(cpu, connections, setLedState, boardElementRef, positions) {
-    const pin = cpu.registerSet.getRegister(10); // a0
-    const value = cpu.registerSet.getRegister(11); // a1
+  0x100: function cr_digitalWrite(connections, setLedState, boardElementRef, positions) {
+    //const pin = cpu.registerSet.getRegister(10); // a0
+    var ret1 = crex_findReg('a0');
+    if (ret1.match === 0) {
+      throw packExecute(true, "capi_arduino: register a0 not found", 'danger', null);	
+    }
+    var pin = BigInt.asIntN(32,readRegister(ret1.indexComp, ret1.indexElem));
+    //const value = cpu.registerSet.getRegister(11); // a1
+    var ret2 = crex_findReg('a1');
+    if (ret2.match === 0) {
+      throw packExecute(true, "capi_arduino: register a0 not found", 'danger', null);	
+    }
+    var value = BigInt.asIntN(32,readRegister(ret2.indexComp, ret2.indexElem));
     console.log(`cr_digitalWrite invoked! pin: ${pin}, value: ${value}`);
     const GPIOpin = "GPIO" + pin;
     console.log(GPIOpin);
@@ -81,22 +93,9 @@ const hookMap = {
 
       
     }
-    cpu.pc = cpu.registerSet.getRegister(1); // ret
+    //cpu.pc = cpu.registerSet.getRegister(1); // ret
   },
-
-  0x104: async function cr_delay(cpu, setLedState) {
-    const time = cpu.registerSet.getRegister(10);
-    console.log(`cr_delay invoked! time: ${time}ms`);
-
-    const start = Date.now();
-    await sleep(time);
-    const end = Date.now();
-
-    console.log(`Sleep duró aproximadamente: ${end - start}ms`);
-    cpu.pc = cpu.registerSet.getRegister(1);
-  },
-
-  0x108: function cr_digitalRead(cpu, connections) {
+  0x108: function cr_digitalRead(connections) {
     const pin = cpu.registerSet.getRegister(10); // a0
     console.log(`cr_digitalRead invoked! pin: ${pin}`);
     const GPIOpin = "GPIO" + pin;

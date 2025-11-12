@@ -6,6 +6,9 @@ import { packExecute } from "../utils/utils.mjs";
 import { readRegister, writeRegister } from "../register/registerOperations.mjs";
 import { ARCH as RISCV } from "@/core/capi/arch/riscv.mjs";
 import { REGISTERS } from "../core.mjs";
+import hookMap from '../../web/components/simulator/CreatinoMaker/components/BoardElements/esp32c3devkit2.js';
+//import {connections,compState,svgRef,positions} from '../../web/components/simulator/CreatinoMaker/App.vue'
+import { connections, positions, compState, svgRef } from '../../web/components/simulator/CreatinoMaker/state';
 
 /*
  *  CREATOR instruction description API:
@@ -26,7 +29,9 @@ export function cr_initArduino() {
 }
 export function cr_digitalRead() { console.log("cr_digitalRead called"); }
 export function cr_pinMode() { console.log("cr_pinMode called"); }
-export function cr_digitalWrite() { console.log("cr_digitalWrite called"); }
+export function cr_digitalWrite() { console.log("cr_digitalWrite called"); 
+    hookMap[0x100](connections.value, (val) => (compState.value = val), svgRef, positions);
+}
 export function cr_analogRead() { console.log("cr_analogRead called"); }
 export function cr_analogReadResolution() { console.log("cr_analogReadResolution called"); }
 export function cr_analogWrite() { console.log("cr_analogWrite called"); }

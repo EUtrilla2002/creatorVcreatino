@@ -35,6 +35,7 @@ import WorkMenu from './components/Gadgets/Elements/ConfigWork.vue';
 import Buzzer from './components/Gadgets/Elements/Buzzer.vue';
 // import JSZip from 'jszip';
 import BoardSelect from './components/Gadgets/Elements/BoardSelect.vue';
+import { connections, positions, compState, svgRef } from './state';
 const workspaceRef = ref<HTMLDivElement | null>(null);
 const boardDataMutable = ref({ ...boardData });
 
@@ -43,37 +44,11 @@ const undoStack = ref<Array<{ positions: typeof positions.value, connections: ty
 const redoStack = ref<Array<{ positions: typeof positions.value, connections: typeof connections.value }>>([]);
 
 
-const compState = ref(true);
-const positions = ref<{ id: string, position: { x: number, y: number }, compState: boolean ,   flipped: boolean,  rotation: number, color : string }[]>([
-  {
-    id: 'board',
-    position: { x: 300, y: 100 },
-    compState: true,
-    flipped: false,
-    rotation: 0,
-    color: 'black',
-  }
-]);
 const gadgetRefs = ref<Record<string, any>>({});
 //Deformar líneas
 
 // Dibujo de líneas
 const tempLine = ref<{ x1: number, y1: number, x2: number, y2: number } | null>(null);
-const connections = ref<Array<{
-  id: string,
-  x1: number,
-  y1: number,
-  x2: number,
-  y2: number,
-  cx1: number,
-  cy1: number,
-  cx2: number,
-  cy2: number,
-  fromPinId: string,
-  toPinId: string,
-  stroke: string,
-  strokeWidth: number
-}>>([]);
 // Código
 
 // const asmCode = ref([
@@ -101,14 +76,13 @@ const asmCode = ref([
 
 const draggingId = ref<string | null>(null)
 const offset = reactive({ x: 0, y: 0 })
-const svgRef = ref<SVGSVGElement | null>(null)
 const selectedPin = ref<string | null>(null)
 
 const showSave = ref(false);
 const showUpload = ref(false);
 const filename = ref('board-state');
 
-const SCALE= ref(1); // empieza en 1x
+const SCALE= ref(1.5); // empieza en 1x
 
 function handleMouseDown(e: MouseEvent, id: string) {
   saveStateForUndo() 
@@ -366,39 +340,39 @@ function handleWorkspaceMouseUp() {
 }
 //Conexion con el kernel
 
-const runProgram = async () => {
-      const programBuffer = Assembler.assemble(asmCode.value);
-      const ramSize = 1024;
-      const ram = new ArrayBuffer(ramSize);
-      const ramView = new Uint8Array(ram);
-      const programView = new Uint8Array(programBuffer);
-      ramView.set(programView, 0);
+// const runProgram = async () => {
+//       const programBuffer = Assembler.assemble(asmCode.value);
+//       const ramSize = 1024;
+//       const ram = new ArrayBuffer(ramSize);
+//       const ramView = new Uint8Array(ram);
+//       const programView = new Uint8Array(programBuffer);
+//       ramView.set(programView, 0);
 
-      const cpu = new CPU(ram, 0);
-      let prev_value = 0;
-      for (let i = 0; i < 50; i++) {
-        const pcvalue = cpu.pc - prev_value;
-        switch (pcvalue) {
-          case 0x100:
-            hookMap[0x100](cpu, connections.value, (val) => (compState.value = val), svgRef, positions);
-            prev_value = cpu.pc;
-            break;
-          case 0x104:
-            await hookMap[0x104](cpu, (val) => (compState.value = val));
-            prev_value = cpu.pc;
-            break;
-          case 0x108:
-            await hookMap[0x108](cpu, connections.value,(val) => (compState.value = val));
-            prev_value = cpu.pc;
-            break;  
-          default:
-            prev_value = cpu.pc;
-            cpu.executionStep();
-            console.log(`PC: ${cpu.pc}`);
-            console.log(`ra: ${cpu.registerSet.getRegister(1)}`);
-        }
-      }
-    };
+//       const cpu = new CPU(ram, 0);
+//       let prev_value = 0;
+//       for (let i = 0; i < 50; i++) {
+//         const pcvalue = cpu.pc - prev_value;
+//         switch (pcvalue) {
+//           case 0x100:
+//             hookMap[0x100](connections.value, (val) => (compState.value = val), svgRef, positions);
+//             //prev_value = cpu.pc;
+//             break;
+//           case 0x104:
+//             await hookMap[0x104](cpu, (val) => (compState.value = val));
+//             prev_value = cpu.pc;
+//             break;
+//           case 0x108:
+//             await hookMap[0x108](cpu, connections.value,(val) => (compState.value = val));
+//             prev_value = cpu.pc;
+//             break;  
+//           default:
+//             prev_value = cpu.pc;
+//             cpu.executionStep();
+//             console.log(`PC: ${cpu.pc}`);
+//             console.log(`ra: ${cpu.registerSet.getRegister(1)}`);
+//         }
+//       }
+//     };
 
 function setupPinListeners() {
   if (!svgRef.value) return;
@@ -789,8 +763,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div id="app-main" class="App" @mousemove="handleMouseMove" @mouseup="handleMouseUp" style="width: 45vw; height: 80vh; position: relative; overflow: hidden;">
-    <h1 style="text-align: center; margin-top: 1rem;">Creatino Maker</h1>
+  <div id="app-main" class="App" @mousemove="handleMouseMove" @mouseup="handleMouseUp" style="width: 45vw; height: 90vh; position: relative; overflow: hidden;">
     <Menu v-if="showMenu" :dark-mode="darkMode" style="position: absolute; bottom:300px; right: 360px; z-index: 1200;" @add-gadget="handleAddGadget" />
     <FileMenu v-if="showFile" style="position: absolute; top: 170px; right: 250px; z-index: 1000;" @file-action="onFileAction" />
     <WorkMenu v-if="showWork" style="position: absolute; top: 170px; left:100px; z-index: 1000;" @work-action="onWorkAction" />
