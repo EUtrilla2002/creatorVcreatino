@@ -10,20 +10,21 @@
         <button class="btn btn-sm p-0 border-0 bg-transparent ms-2" @click="$emit('close')">&times;</button>
       </div>
       <hr class="my-2" />
-      <div class="d-flex flex-row gap-2 align-items-center">
-        <button
-          v-for="item in category.items"
-          :key="item.label"
-          :ref="item.label === 'Color' ? setColorButtonRef : null"
-          class="btn btn-light d-flex align-items-center me-1 mb-1"
-          :class="{ active: selectedItem === item.label }"
-          type="button"
-          @click="onItemClick(item.label)"
-        >
-          <fa-icon :icon="item.icon" class="me-2" />
-          <span>{{ item.label }}</span>
-        </button>
-      </div>
+    <div class="d-flex flex-row gap-1 align-items-center">
+      <button
+        v-for="item in category.items"
+        :key="item.label"
+        :ref="item.label === 'Color' ? setColorButtonRef : null"
+        class="btn btn-light btn-sm d-flex align-items-center me-1 mb-0"
+        :class="{ active: selectedItem === item.label }"
+        type="button"
+        @click="onItemClick(item.label)"
+      >
+        <fa-icon :icon="item.icon" class="me-1" size="sm" />
+        <span class="small">{{ item.label }}</span>
+      </button>
+    </div>
+
     </div>
 
     <!-- Popup anclado a la posición del botón -->

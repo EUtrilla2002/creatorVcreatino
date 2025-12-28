@@ -66,8 +66,8 @@
     <ConfigMenu
       :style="{
       position: 'absolute',
-      left: (configMenuPosition.x + 100) + 'px',
-      top: configMenuPosition.y + 'px',
+      left: (configMenuPosition.x  + 20) + 'px',
+      top: (configMenuPosition.y + 50) + 'px',
       zIndex: 10000,
       pointerEvents: 'auto',
       transform: 'scale(1.5)'

@@ -7,7 +7,7 @@
     <div
       class="color-popup border rounded-3 shadow color-picker-popup"
       :class="isDark ? 'bg-dark text-light' : 'bg-white'"
-      :style="{ top: position.y + 'px', left: position.x + 'px', width: width + 'px' }"
+      :style="{ top: position.y + 'px', left: position.x + 'px', width: width + 'px', zIndex: 1200 }"
       @mousedown.stop
     >
       <div
@@ -27,26 +27,26 @@
             class="colorpicker"
             :style="{
               transform: 'scale(2)',
-              transformOrigin: 'top left'
+              transformOrigin: 'top right',
             }"
             inline
           />
         </div>
 
         <div class="mb-3 small" :class="isDark ? 'text-light' : 'text-secondary'">
-          Color seleccionado: <span :style="{ color }">{{ color }}</span>
+          Selected color: <span :style="{ color }">{{ color }}</span>
         </div>
         <button
           class="btn btn-primary me-2"
           @click="$emit('update:modelValue', color)"
         >
-          Aplicar Color
+          Change Color
         </button>
         <button
           class="btn btn-outline-secondary"
           @click="$emit('close')"
         >
-          Cerrar
+          Close
         </button>
       </div>
     </div>
@@ -93,6 +93,7 @@ const isDark = computed(() => {
   position: fixed;
   z-index: 50;
   transform: translateY(10px);
+  
 }
 
 .popup-arrow {
@@ -120,10 +121,11 @@ const isDark = computed(() => {
   padding: 0;
   width: 100%;
   box-sizing: border-box;
+  
 }
 
 .colorpicker {
-  width: 100%;
+  width: 90%;
 }
 
 .picker-wrapper {

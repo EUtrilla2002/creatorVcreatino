@@ -208,13 +208,13 @@ function handleConfigClick(event: MouseEvent) {
 
 function onButtonPress(event) {
   // Lógica cuando se presiona el botón
-  //console.log("Pressed!!")
+  // console.log("Pressed!!")
   isPressed.value = true
 }
 
 function onButtonRelease(event) {
   // Lógica cuando se suelta el botón
-  //console.log("Released!!")
+  // console.log("Released!!")
   isPressed.value = false
 }
 </script>

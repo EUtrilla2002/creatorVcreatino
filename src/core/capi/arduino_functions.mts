@@ -28,11 +28,11 @@ export function cr_initArduino() {
     } 
 }
 export function cr_digitalRead() { console.log("cr_digitalRead called"); 
-     hookMap[0x100](connections.value, (val) => (compState.value = val), svgRef, positions);
+     hookMap[0x4](connections.value, (val) => (compState.value = val), svgRef, positions);
 }
 export function cr_pinMode() { console.log("cr_pinMode called"); }
 export function cr_digitalWrite() { console.log("cr_digitalWrite called"); 
-    hookMap[0x108](connections.value,(val) => (compState.value = val));
+    hookMap[0xc](connections.value,(val) => (compState.value = val));
 }
 export function cr_analogRead() { console.log("cr_analogRead called"); }
 export function cr_analogReadResolution() { console.log("cr_analogReadResolution called"); }

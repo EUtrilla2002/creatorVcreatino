@@ -35,6 +35,8 @@ import WorkMenu from './components/Gadgets/Elements/ConfigWork.vue';
 import Buzzer from './components/Gadgets/Elements/Buzzer.vue';
 // import JSZip from 'jszip';
 import BoardSelect from './components/Gadgets/Elements/BoardSelect.vue';
+// import TextareaAssembly from '@/web/components/assembly/TextareaAssembly.vue'; // Ajusta la ruta si es necesario
+import { getCurrentInstance } from 'vue';
 import { connections, positions, compState, svgRef } from './state';
 const workspaceRef = ref<HTMLDivElement | null>(null);
 const boardDataMutable = ref({ ...boardData });
@@ -60,19 +62,9 @@ const tempLine = ref<{ x1: number, y1: number, x2: number, y2: number } | null>(
 //       "jal ra, 0x108",
 
 //     ]);
-const asmCode = ref([
-      "addi a0, a0, 5",
-      "addi a1, a1, 1",
-      "jal ra, 0x100",
-      "addi a0, a0, -5",
-      "addi a0, a0, 1000",
-      "jal ra, 0x104",
-      "addi a0, a0, -1000",
-      "addi a0, a0, 5",
-      "addi a1, a1, -1",
-      "addi a1, a1, 0",
-      "jal ra, 0x100",
-    ]);
+const asmCode = ref('');
+const instance = getCurrentInstance();
+const root = instance?.proxy?.$root as any; 
 
 const draggingId = ref<string | null>(null)
 const offset = reactive({ x: 0, y: 0 })
@@ -83,6 +75,8 @@ const showUpload = ref(false);
 const filename = ref('board-state');
 
 const SCALE= ref(1.5); // empieza en 1x
+
+
 
 function handleMouseDown(e: MouseEvent, id: string) {
   saveStateForUndo() 
@@ -611,7 +605,7 @@ function downloadState() {
     positions: positions.value,
     connections: connections.value,
     boardData: boardDataMutable.value, // <--- usa boardData aquí
-    code: asmCode.value,
+    code: root?.assembly_code,
   };
   const json = JSON.stringify(state, null, 2);
   const blob = new Blob([json], { type: 'application/json' });
@@ -651,7 +645,7 @@ function handleFileUpload(event) {
       boardDataMutable.value = parsed.boardData && parsed.boardData.pins
   ? parsed.boardData
   : { ...boardData }; // <-- fallback al boardData original si falta pins
-      asmCode.value = parsed.code || [];
+      root.assembly_code = parsed.code || [];
 
       nextTick(() => {
         updateConnectionsPositions(); // Actualiza visualmente las líneas
@@ -764,27 +758,27 @@ onMounted(() => {
 
 <template>
   <div id="app-main" class="App" @mousemove="handleMouseMove" @mouseup="handleMouseUp" style="width: 45vw; height: 90vh; position: relative; overflow: hidden;">
-    <Menu v-if="showMenu" :dark-mode="darkMode" style="position: absolute; bottom:300px; right: 360px; z-index: 1200;" @add-gadget="handleAddGadget" />
-    <FileMenu v-if="showFile" style="position: absolute; top: 170px; right: 250px; z-index: 1000;" @file-action="onFileAction" />
-    <WorkMenu v-if="showWork" style="position: absolute; top: 170px; left:100px; z-index: 1000;" @work-action="onWorkAction" />
+    <Menu v-if="showMenu" :dark-mode="darkMode" style="position: absolute; bottom:350px; right: 180px; z-index: 1000;" @add-gadget="handleAddGadget" />
+    <FileMenu v-if="showFile" style="position: absolute; top: 90px; right: 180px; z-index: 1000;" @file-action="onFileAction" />
+    <WorkMenu v-if="showWork" style="position: absolute; top: 90px; left:100px; z-index: 1000;" @work-action="onWorkAction" />
         <!-- <button @click="loadPreloadedFile" style="position: absolute; top: 20px; left: 20px; z-index: 1000;">
       Cargar archivo precargado
     </button> -->
 
     <!-- Pantalla save -->
-    <div class="modal fade show" tabindex="-1" style="display: block;" v-if="showSave" aria-modal="true" role="dialog">
+    <div class="modal fade show" tabindex="-1" style="display: block; z-index: 1200;" v-if="showSave" aria-modal="true" role="dialog">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Introduce un nombre para el archivo:</h5>
+            <h5 class="modal-title">Introduce a name for the save file:</h5>
             <button type="button" class="btn-close" @click="cancelDownload"></button>
           </div>
           <div class="modal-body">
             <input v-model="filename" class="form-control" placeholder="board-state" />
           </div>
           <div class="modal-footer">
-            <button class="btn btn-primary" @click="confirmDownload">Aceptar</button>
-            <button class="btn btn-primary" @click="cancelDownload">Cancelar</button>
+            <button class="btn btn-primary" @click="confirmDownload">Confirm</button>
+            <button class="btn btn-primary" @click="cancelDownload">Cancel</button>
           </div>
         </div>
       </div>
@@ -792,19 +786,19 @@ onMounted(() => {
     <div class="modal-backdrop fade show" v-if="showSave"></div>
 
     <!-- Pantalla upload -->
-    <div class="modal fade show" tabindex="-1" style="display: block;" v-if="showUpload" aria-modal="true" role="dialog">
+    <div class="modal fade show" tabindex="-1" style="display: block; z-index: 1200;" v-if="showUpload" aria-modal="true" role="dialog">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Sube un archivo JSON para cargar el estado:</h5>
+            <h5 class="modal-title">Upload a CREATino JSON file to load :</h5>
             <button type="button" class="btn-close" @click="cancelUpload"></button>
           </div>
           <div class="modal-body">
             <input type="file" @change="handleFileUpload" accept=".json" class="form-control" />
           </div>
           <div class="modal-footer">
-            <button class="btn btn-primary" @click="confirmUpload">Aceptar</button>
-            <button class="btn btn-primary" @click="cancelUpload">Cancelar</button>
+            <button class="btn btn-primary" @click="confirmUpload">Confirm</button>
+            <button class="btn btn-primary" @click="cancelUpload">Cancel</button>
           </div>
         </div>
       </div>
@@ -972,7 +966,7 @@ onMounted(() => {
 <style>
 /* --------- General --------- */
 #app-main {
-  background-color: #ffffff;
+  background-color: transparent;
   color: #212529;
   transition: background 0.3s, color 0.3s;
 }

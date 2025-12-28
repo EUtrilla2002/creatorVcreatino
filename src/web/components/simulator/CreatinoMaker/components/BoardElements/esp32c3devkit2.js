@@ -6,7 +6,7 @@ import { packExecute } from "@/core/utils/utils.mjs";
 import { readRegister, writeRegister } from "@/core/register/registerOperations.mjs";
 
 const hookMap = {
-  0x100: function cr_digitalWrite(connections, setLedState, boardElementRef, positions) {
+  0xc: function cr_digitalWrite(connections, setLedState, boardElementRef, positions) {
     //const pin = cpu.registerSet.getRegister(10); // a0
     var ret1 = crex_findReg('a0');
     if (ret1.match === 0) {
@@ -95,21 +95,30 @@ const hookMap = {
     }
     //cpu.pc = cpu.registerSet.getRegister(1); // ret
   },
-  0x108: function cr_digitalRead(connections) {
-    const pin = cpu.registerSet.getRegister(10); // a0
+  0x4: function cr_digitalRead(connections) {
+    // const pin = cpu.registerSet.getRegister(10); // a0
+    var ret1 = crex_findReg('a0');
+    if (ret1.match === 0) {
+      throw packExecute(true, "capi_arduino: register a0 not found", 'danger', null);	
+    }
+    var pin = BigInt.asIntN(32,readRegister(ret1.indexComp, ret1.indexElem));
     console.log(`cr_digitalRead invoked! pin: ${pin}`);
     const GPIOpin = "GPIO" + pin;
     console.log(GPIOpin);
 
     if (!boardData.pins.includes(GPIOpin)) {
-      cpu.registerSet.setRegister(10, 0);
-      cpu.pc = cpu.registerSet.getRegister(1);
+      // cpu.registerSet.setRegister(10, 0);
+      // cpu.pc = cpu.registerSet.getRegister(1);
+      writeRegister(BigInt(1), ret1.indexComp, ret1.indexElem);
+      console.log("Not added pin")
       return;
     }
 
     if (connections.length === 0) {
-      cpu.registerSet.setRegister(10, 0);
-      cpu.pc = cpu.registerSet.getRegister(1);
+      // cpu.registerSet.setRegister(10, 0);
+      // cpu.pc = cpu.registerSet.getRegister(1);
+      writeRegister(BigInt(1), ret1.indexComp, ret1.indexElem);
+      console.log("Not connections ")
       return;
     }
 
@@ -121,6 +130,7 @@ const hookMap = {
       const gndConnection = connections.find(
         (conn) => conn.fromPinId.includes("GND") && conn.toPinId.endsWith(gndEnd)
       );
+      console.log("gnd: ", gndEnd, "gpio:", gpioEnd, "->", !!gpioConnection, !!gndConnection);
       return !!gpioConnection && !!gndConnection;
     }
 
@@ -134,8 +144,9 @@ const hookMap = {
 
     for (const [gpioEnd, gndEnd] of invalidCases) {
       if (isInvalidCase(gpioEnd, gndEnd)) {
-        cpu.registerSet.setRegister(10, 0);
-        cpu.pc = cpu.registerSet.getRegister(1);
+        // cpu.registerSet.setRegister(10, 0);
+        // cpu.pc = cpu.registerSet.getRegister(1);
+        writeRegister(BigInt(1), ret1.indexComp, ret1.indexElem);
         return;
       }
     }
@@ -147,9 +158,10 @@ const hookMap = {
     if (gpioConnection) {
       executeButton(gpioConnection);
     } else {
-      cpu.registerSet.setRegister(10, 0);
+      // cpu.registerSet.setRegister(10, 0);
+      writeRegister(BigInt(1), ret1.indexComp, ret1.indexElem);
     }
-    cpu.pc = cpu.registerSet.getRegister(1);
+    // cpu.pc = cpu.registerSet.getRegister(1);
 
     function executeButton(gpioConnection) {
       const toPinId = gpioConnection.toPinId;
@@ -162,7 +174,8 @@ const hookMap = {
       console.log("Elemento Boton:", toElement);
       const wokwiButton = toElement.querySelector("wokwi-pushbutton");
       console.log("¿Botón presionado?", wokwiButton.pressed);
-      cpu.registerSet.setRegister(10, wokwiButton.pressed ? 1 : 0);
+      writeRegister(wokwiButton.pressed ? BigInt(1) : BigInt(0), ret1.indexComp, ret1.indexElem);
+      // cpu.registerSet.setRegister(10, wokwiButton.pressed ? 1 : 0);
     }
   },
   

@@ -17,7 +17,7 @@
         </button>
       </div>
     </div>
-    <div class="d-flex align-items-center px-2 py-2 rounded-2" :class="{ 'bg-secondary bg-opacity-10': isDark }">
+    <!-- <div class="d-flex align-items-center px-2 py-2 rounded-2" :class="{ 'bg-secondary bg-opacity-10': isDark }">
       <fa-icon icon="moon" class="me-2" />
       <span class="me-2">Dark Mode</span>
       <div class="form-check form-switch ms-auto">
@@ -31,7 +31,7 @@
         >
         <label class="form-check-label" for="darkModeSwitch"></label>
       </div>
-    </div>
+    </div> -->
 
   <!-- Usa teleport para el modal -->
   <!-- <teleport to="#overlay-container">
@@ -75,9 +75,9 @@ function handleFile(label) {
     case 'DarkMode':
       emit('work-action', 'dark')
       break;
-    case 'Change Board':
-      emit('work-action', 'show')
-      break;
+    // case 'Change Board':
+    //   emit('work-action', 'show')
+    //   break;
   }
 }
 
@@ -103,15 +103,15 @@ const categories = ref([
     name: 'Other',
     items: [
       { label: 'Clean All', icon: 'trash'  },
-      { label: 'Info', icon: 'info' },
+      // { label: 'Info', icon: 'info' },
     ],
   },
-  {
-    name: 'Board',
-    items: [
-      { label: 'Change Board', icon: 'gift'  },
-    ],
-  },
+  // {
+  //   name: 'Board',
+  //   items: [
+  //     { label: 'Change Board', icon: 'gift'  },
+  //   ],
+  // },
 ])
 
 const filteredCategories = computed(() => {

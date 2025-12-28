@@ -178,8 +178,8 @@ function getMenuStyle(line: any) {
   const y = (line.y1 + line.codoY + line.y2) / 3;
   return {
     position: 'absolute',
-    left: `${x - 150}px`,
-    top: `${y + 80}px`,
+    left: `${x - 90}px`,
+    top: `${y + 130}px`,
     transform: 'translate(-50%, -50%)',
     zIndex: '10000',
     pointerEvents: 'auto',

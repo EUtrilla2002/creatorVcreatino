@@ -1,29 +1,40 @@
 <template>
   <div
     ref="menuRef"
-    :class="['config-menu', 'menu-panel', 'bg-white', 'border', 'rounded-3', 'shadow-sm', 'p-3', isDark ? 'bg-dark text-light' : 'bg-white']"
-    style="width: 240px; min-height: 150px; z-index: 1000;"
+    :class="[
+      'config-menu',
+      'menu-panel',
+      'border',
+      'rounded-2',
+      'shadow-sm',
+      'p-2',
+      isDark ? 'bg-dark text-light' : 'bg-white'
+    ]"
+    style="width: 110px; min-height: 80px; z-index: 1000;"
   >
-    <div v-for="category in filteredCategories" :key="category.name" class="mb-4">
-      <div class="fw-bold fs-6 mb-2">{{ category.name }}</div>
-      <hr class="my-2" />
-      <div class="d-flex flex-column gap-1">
+    <div v-for="category in filteredCategories" :key="category.name" class="mb-2">
+      <div class="fw-semibold fs-7 mb-1">
+        {{ category.name }}
+      </div>
+
+      <hr class="my-1" />
+
+      <div class="d-flex flex-column gap-0">
         <button
           v-for="item in category.items"
           :key="item.label"
           :ref="item.label === 'Color' ? setColorButtonRef : null"
-          class="btn btn-light text-start d-flex align-items-center mb-1"
+          class="btn btn-light btn-sm text-start d-flex align-items-center px-2 py-1"
           :class="{ active: selectedItem === item.label }"
           type="button"
           @click="onItemClick(item.label)"
         >
-          <fa-icon :icon="item.icon" class="me-2" />
-          <span>{{ item.label }}</span>
+          <fa-icon :icon="item.icon" class="me-1" size="sm" />
+          <span class="small">{{ item.label }}</span>
         </button>
       </div>
     </div>
 
-    <!-- Popup anclado a la posición del botón -->
     <ColorPickerPopup
       v-if="selectedItem === 'Color'"
       ref="colorPickerRef"
@@ -35,6 +46,7 @@
     />
   </div>
 </template>
+
 
 <script setup lang="ts">
 import { ref, computed, nextTick, onMounted, onBeforeUnmount, watch, defineExpose } from 'vue'
