@@ -840,9 +840,11 @@ onMounted(() => {
           <button @click="setupMenu" id="plus-btn" style="font-size: 1.5rem; padding: 0.75rem 1.5rem; margin-right: 0.5rem;">
             <fa-icon :icon="['fas', 'circle-plus']" style="width: 1em; height: 1em; color: white;" />
           </button>
-          <button @click="runProgram" style="font-size: 1.5rem; padding: 0.75rem 1.5rem; margin-right: 0.5rem;">
-            <fa-icon :icon="['fas', 'play']" style="width: 1em; height: 1em; color: white;" />
-          </button>
+          <!--<button @click="runProgram" style="font-size: 1.5rem; padding: 0.75rem 1.5rem; margin-right: 0.5rem;"> -->
+            <!-- <fa-icon :icon="['fas', 'play']" style="width: 1em; height: 1em; color: white;" /> -->
+
+          <!-- 
+          </button> -->
           <!-- <button @click="exportBoardAsZip">Exportar placa como ZIP</button> -->
           <!-- <button @click="clearConnections" style="font-size: 1.5rem; padding: 0.75rem 1.5rem;">
             <fa-icon :icon="['fas', 'trash']" style="width: 1em; height: 1em; color: white;" />
